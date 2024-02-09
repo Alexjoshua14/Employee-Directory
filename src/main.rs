@@ -1,114 +1,9 @@
-use std::{collections::HashMap, fmt::Debug};
+mod utilities;
+mod work;
 
-#[derive(Debug)]
-pub enum Department {
-    Engineering,
-    Sales,
-    Branding,
-}
-
-impl Department {
-    pub fn to_string(&self) -> String {
-        match self {
-            Department::Engineering => "Engineering".to_string(),
-            Department::Sales => "Sales".to_string(),
-            Department::Branding => "Branding".to_string(),
-        }
-    }
-}
-
-#[derive(Debug)]
-pub struct Date {
-    day: u8,
-    month: u8,
-    year: u16,
-}
-
-impl Date {
-    pub fn new_with_date(day: u8, month: u8, year: u16) -> Self {
-        Self { day, month, year }
-    }
-
-    pub fn today() -> Self {
-        Self {
-            day: 8,
-            month: 2,
-            year: 2024,
-        }
-    }
-
-    pub fn get_date(&self) -> String {
-        format!("{}/{}/{}", self.day, self.month, self.year)
-    }
-}
-
-#[derive(Debug)]
-pub struct Employee {
-    department: Department,
-    first_name: String,
-    last_name: String,
-    start_date: Date,
-}
-
-impl Employee {
-    pub fn new(first_name: String, last_name: String, department: Department) -> Self {
-        Self {
-            first_name,
-            last_name,
-            department,
-            start_date: Date::today(),
-        }
-    }
-
-    pub fn name(&self) -> String {
-        format!("{} {}", self.first_name, self.last_name)
-    }
-
-    pub fn department(&self) -> String {
-        self.department.to_string()
-    }
-
-    pub fn start_date(&self) -> String {
-        self.start_date.get_date()
-    }
-}
-
-pub struct EmployeeDirectory {
-    directory: HashMap<String, Vec<Employee>>,
-}
-
-impl EmployeeDirectory {
-    pub fn new() -> Self {
-        Self {
-            directory: HashMap::new(),
-        }
-    }
-
-    pub fn employee_list(&self) -> String {
-        let mut list = String::new();
-
-        for (department, department_list) in &self.directory {
-            list.push_str(&department.to_string());
-            list.push_str(": ");
-            for e in department_list {
-                list.push_str(&e.name());
-                list.push_str(", ");
-            }
-            list.push_str("\n")
-        }
-
-        list
-    }
-
-    pub fn add_employee(&mut self, e: Employee) {
-        let department_list = self
-            .directory
-            .entry(e.department().clone())
-            .or_insert(Vec::new());
-
-        department_list.push(e);
-    }
-}
+use work::Department;
+use work::Employee;
+use work::EmployeeDirectory;
 
 fn main() {
     println!("Hello, world!");
@@ -140,9 +35,14 @@ fn build_directory() -> EmployeeDirectory {
         Department::Engineering,
     );
 
+    let xan = Employee::new("Xan".to_string(), "Essex".to_string(), Department::Sales);
+
+    println!("{} started on {}", xan.name(), xan.start_date());
+
     dir.add_employee(sally);
     dir.add_employee(bill);
     dir.add_employee(steve);
+    dir.add_employee(xan);
 
     loop {
         match get_employee_info() {
