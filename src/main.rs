@@ -1,6 +1,8 @@
 mod utilities;
 mod work;
 
+use std::io;
+
 use work::Department;
 use work::Employee;
 use work::EmployeeDirectory;
@@ -50,10 +52,19 @@ fn build_directory() -> EmployeeDirectory {
                 // Add employee to directory
                 println!("Adding {} to the employee directory: \n{:#?}", e.name(), e);
                 dir.add_employee(e);
+                if ask_to_continue("Add another employee to the directory?") {
+                    continue;
+                } else {
+                    break;
+                }
             }
             None => {
-                println!("Directory building completing..");
-                break;
+                println!("Failed to create employee..");
+                if ask_to_continue("Add another employee to the directory?") {
+                    continue;
+                } else {
+                    break;
+                }
             }
         }
     }
@@ -63,17 +74,39 @@ fn build_directory() -> EmployeeDirectory {
 
 // Asks user for input to create new employee
 fn get_employee_info() -> Option<Employee> {
-    // Let user know they can start creating a new employee
-    // Grab first name, last name, department
-    // Create employee and return to caller
-    // Optionally return none if user decided not to create an employee
+    println!("Creating new employee..");
 
-    let mut _fn = String::new();
-    let mut _ln = String::new();
-    let mut _d = String::new();
+    println!("Employee's first name: ");
+    let first_name = get_input("No first name provided..");
 
-    // Cast department to Department enum
-    // Should probably convert to all one case for better matching
+    println!("Employee's last name: ");
+    let last_name = get_input("No last name provided..");
 
-    return None;
+    println!("Employee's department: ");
+    let department = get_input("No department provided..");
+
+    // TODO: Should ensure that the department is valid
+    let department = Department::new(&department)?;
+
+    // TODO: Should ensure the employee is not already in the directory
+
+    Some(Employee::new(first_name, last_name, department))
+}
+
+fn get_input(exception: &str) -> String {
+    let mut buf = String::new();
+
+    io::stdin().read_line(&mut buf).expect(&exception);
+
+    buf.trim().to_string()
+}
+
+fn ask_to_continue(prompt: &str) -> bool {
+    println!("{} [y/n]", prompt);
+    match get_input("Please enter y or n").as_str() {
+        "y" => true,
+        "yes" => true,
+        "n" => false,
+        _ => false,
+    }
 }
