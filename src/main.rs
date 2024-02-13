@@ -93,6 +93,7 @@ fn get_employee_info() -> Option<Employee> {
     Some(Employee::new(first_name, last_name, department))
 }
 
+// Gets user input and trims whitespace
 fn get_input(exception: &str) -> String {
     let mut buf = String::new();
 
