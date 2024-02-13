@@ -1,3 +1,5 @@
+use chrono::{prelude::Local, Datelike};
+
 #[derive(Debug)]
 pub struct Date {
     day: u8,
@@ -11,10 +13,11 @@ impl Date {
     }
 
     pub fn today() -> Self {
+        let today = Local::now();
         Self {
-            day: 8,
-            month: 2,
-            year: 2024,
+            day: today.day() as u8,
+            month: today.month() as u8,
+            year: today.year() as u16,
         }
     }
 
