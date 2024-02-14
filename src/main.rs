@@ -2,6 +2,7 @@ mod utilities;
 mod work;
 
 use std::io;
+use std::io::Write;
 
 use work::Department;
 use work::Employee;
@@ -76,13 +77,16 @@ fn build_directory() -> EmployeeDirectory {
 fn get_employee_info() -> Option<Employee> {
     println!("Creating new employee..");
 
-    println!("Employee's first name: ");
+    print!("Employee's first name: ");
+    io::stdout().flush().unwrap();
     let first_name = get_input("No first name provided..");
 
-    println!("Employee's last name: ");
+    print!("Employee's last name:  ");
+    io::stdout().flush().unwrap();
     let last_name = get_input("No last name provided..");
 
-    println!("Employee's department: ");
+    print!("Employee's department: ");
+    io::stdout().flush().unwrap();
     let department = get_input("No department provided..");
 
     // TODO: Should ensure that the department is valid
@@ -103,7 +107,8 @@ fn get_input(exception: &str) -> String {
 }
 
 fn ask_to_continue(prompt: &str) -> bool {
-    println!("{} [y/n]", prompt);
+    print!("{} [y/n]: ", prompt);
+    io::stdout().flush().unwrap();
     match get_input("Please enter y or n").as_str() {
         "y" => true,
         "yes" => true,
